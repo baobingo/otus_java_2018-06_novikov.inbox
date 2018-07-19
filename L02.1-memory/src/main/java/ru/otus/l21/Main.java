@@ -21,5 +21,10 @@ public class Main {
         MeasureTool.makeMeasure(objectFactory.createSomeClass(ObjectFactory.primitiveTypes.LONG));
         MeasureTool.makeMeasure(objectFactory.createObjectArray(new String()));
         MeasureTool.makeMeasure(objectFactory.createObjectArray(new SomeClassLONG()));
+
+        MeasureTool.makeMeasure(objectFactory.createObjectArray(""));
+        MeasureTool.makeMeasureAll(objectFactory.createObjectArray(10));
+        MeasureTool.makeMeasureAll(objectFactory.createObjectArray(100));
+        MeasureTool.makeMeasureAll(objectFactory.createObjectArray(1000));
     }
 }

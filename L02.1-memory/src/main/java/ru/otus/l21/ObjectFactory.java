@@ -23,6 +23,15 @@ class ObjectFactory {
         }
         return array;
     }
+
+    Object[] createObjectArray(int size) throws InterruptedException{
+        Object[] array = new Object[size];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new Object();
+        }
+        return array;
+    }
+
     Object[] createObjectArrayByte() throws InterruptedException{
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {

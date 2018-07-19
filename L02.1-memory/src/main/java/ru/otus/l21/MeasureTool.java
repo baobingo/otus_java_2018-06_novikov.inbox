@@ -34,6 +34,15 @@ public class MeasureTool {
         setLastMem(getMem());
     }
 
+    static void makeMeasureAll(Object[] instance) throws InterruptedException {
+        calculateCurrentRefSize();
+        long currentUsage = getMem();
+        System.out.println(instance.getClass().getName() + " Object size: " + ((currentUsage - getLastMem())));
+        instance = null;
+        Thread.sleep(1000);
+        setLastMem(getMem());
+    }
+
     static long getMem() throws InterruptedException {
         System.gc();
         Thread.sleep(10);
