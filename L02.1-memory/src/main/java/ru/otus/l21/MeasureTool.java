@@ -1,6 +1,8 @@
 package ru.otus.l21;
 
 
+import java.util.function.Supplier;
+
 public class MeasureTool {
     private static long lastMem;
     private static long refSize;
@@ -48,6 +50,16 @@ public class MeasureTool {
         Thread.sleep(10);
         Runtime runtime = Runtime.getRuntime();
         return runtime.totalMemory() - runtime.freeMemory();
+    }
+
+    static void makeMeasure(Supplier<Object[]> supplier) throws InterruptedException {
+        calculateCurrentRefSize();
+        Object[] array = supplier.get();
+        long currentUsage = getMem();
+        System.out.println("Object size: " + (((currentUsage - getLastMem())/array.length)-getRefSize()));
+        array = null;
+        Thread.sleep(1000);
+        setLastMem(getMem());
     }
 }
 

@@ -1,22 +1,24 @@
 package ru.otus.l21;
 
+import java.util.function.Supplier;
+
+enum primitiveTypes {
+    BYTE,
+    INT,
+    BOOLEAN,
+    LONG;
+}
+
 class ObjectFactory {
 
-    enum primitiveTypes {
-        BYTE,
-        INT,
-        BOOLEAN,
-        LONG;
-    }
-
-    Object[] createObjectArray(Object object) throws Exception{
+    static Object[] createObjectArray(Object object) throws Exception{
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {
             array[i] = Class.forName(object.getClass().getName()).getConstructor().newInstance();
         }
         return array;
     }
-    Object[] createObjectArray() throws InterruptedException{
+    static Object[] createObjectArray(){
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {
             array[i] = new Object();
@@ -24,7 +26,7 @@ class ObjectFactory {
         return array;
     }
 
-    Object[] createObjectArray(int size) throws InterruptedException{
+    static Object[] createObjectArray(int size){
         Object[] array = new Object[size];
         for (int i = 0; i < array.length; i++) {
             array[i] = new Object();
@@ -32,28 +34,28 @@ class ObjectFactory {
         return array;
     }
 
-    Object[] createObjectArrayByte() throws InterruptedException{
+    static Object[] createObjectArrayByte(){
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {
             array[i] = new byte[1];
         }
         return array;
     }
-    Object[] createObjectArrayString() throws InterruptedException{
+    static Object[] createObjectArrayString(){
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {
             array[i] = new String();
         }
         return array;
     }
-    Object[] createObjectArrayStringByte() throws InterruptedException{
+    static Object[] createObjectArrayStringByte(){
         Object[] array = new Object[10_000_000];
         for (int i = 0; i < array.length; i++) {
             array[i] = new String(new byte[1]);
         }
         return array;
     }
-    Object[] createSomeClass(primitiveTypes type)throws InterruptedException{
+    static Object[] createSomeClass(primitiveTypes type){
 
         if(type==primitiveTypes.BYTE){
             Object[] array = new Object[10_000_000];
@@ -84,6 +86,14 @@ class ObjectFactory {
             return array;
         }
         return new Object[1];
+    }
+
+    public static Object[] createSomeClassBYTE() {
+        Object[] array = new Object[10_000_000];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new SomeClassBYTE();
+        }
+        return array;
     }
 }
 
