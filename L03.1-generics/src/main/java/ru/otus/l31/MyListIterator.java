@@ -3,34 +3,30 @@ package ru.otus.l31;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-class MyListInterator<T> implements ListIterator<T> {
+class MyListIterator<T> implements ListIterator<T> {
 
-    private int currentIndex = 0;
+    private int currentIndex;
+    private int lastGotIndex = -1; //for seq next set
     transient MyArrayList<T> elementData;
 
-    public MyListInterator(MyArrayList<T> elementData) {
+    public MyListIterator(MyArrayList<T> elementData) {
         this.elementData = elementData;
     }
 
     @Override
     public boolean hasNext() {
-        try{
-            elementData.get(currentIndex);
-        }catch (IndexOutOfBoundsException e) {
-            return false;
-        }
-        return true;
+        return currentIndex!=elementData.size();
     }
 
     @Override
     public T next() {
-        try {
-            T element = elementData.get(currentIndex);
-            currentIndex++;
-            return element;
-        }catch (ArrayIndexOutOfBoundsException e){
+        if(currentIndex>=elementData.size())
             throw new NoSuchElementException();
-        }
+
+        T element = elementData.get(currentIndex);
+        lastGotIndex = currentIndex;
+        currentIndex++;
+        return element;
     }
 
     @Override
@@ -72,12 +68,12 @@ class MyListInterator<T> implements ListIterator<T> {
 
     @Override
     public void remove() {
-     throw new UnsupportedOperationException(); //:)
+     throw new UnsupportedOperationException();
     }
 
     @Override
     public void set(T t) {
-        elementData.add(currentIndex,t);
+        elementData.set(lastGotIndex,t);
     }
 
     @Override

@@ -10,7 +10,6 @@ public class Main {
 
         MeasureTool.getMem();
         MeasureTool.setLastMem(MeasureTool.getMem());
-//
         MeasureTool.makeMeasure(ObjectFactory.createObjectArray());
         MeasureTool.makeMeasure(ObjectFactory.createObjectArrayString());
         MeasureTool.makeMeasure(ObjectFactory.createObjectArrayStringByte());
@@ -21,7 +20,6 @@ public class Main {
 //        MeasureTool.makeMeasure(objectFactory.createSomeClass(primitiveTypes.LONG));
 //        MeasureTool.makeMeasure(objectFactory.createObjectArray(new String()));
 //        MeasureTool.makeMeasure(objectFactory.createObjectArray(new SomeClassLONG()));
-//
 //        MeasureTool.makeMeasure(objectFactory.createObjectArray(""));
 //        MeasureTool.makeMeasureAll(objectFactory.createObjectArray(10));
 //        MeasureTool.makeMeasureAll(objectFactory.createObjectArray(100));
@@ -38,8 +36,5 @@ public class Main {
 
         supplier = ObjectFactory::createSomeClassBYTE;
         MeasureTool.makeMeasure(supplier);
-
-
-
     }
 }
