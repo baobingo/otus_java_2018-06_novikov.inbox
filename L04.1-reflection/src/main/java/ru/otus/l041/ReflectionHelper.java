@@ -88,9 +88,6 @@ class ReflectionHelper {
 * added by me
 * */
     static <T> Object[] fillArrayMethodsByAnnotation(Class<T> klass, String nameOfAnnotation){
-        Object[] methods;
-        methods = Arrays.stream(klass.getDeclaredMethods()).filter(m->Arrays.stream(m.getAnnotations()).anyMatch(a->a.annotationType().getSimpleName().equals(nameOfAnnotation))).map(m->m.getName()).toArray();
-
-        return methods;
+        return Arrays.stream(klass.getDeclaredMethods()).filter(m->Arrays.stream(m.getAnnotations()).anyMatch(a->a.annotationType().getSimpleName().equals(nameOfAnnotation))).map(m->m.getName()).toArray();
     }
 }
