@@ -20,7 +20,7 @@ class Benchmark implements BenchmarkMBean {
             }
             System.out.println("Created " + local + " objects.");
 
-            Thread.sleep(500);
+            Thread.sleep(100);
         }
     }
 
