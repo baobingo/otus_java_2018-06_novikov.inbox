@@ -4,42 +4,31 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class CacheEngineImplTest {
+class CacheEngineGenericsImplTest {
 
     private static Logger logger = LoggerFactory.getLogger(CacheEngineImplTest.class);
-    CacheEngine<Integer, String> cache;
-
-    //VM options: -Xmx256m -Xms256m
-    @Test
-    void OOMTest(){
-        int size = 2_400_000;
-
-        //call method will OOM Exception as result
-        //cache = new CacheEngineImplStrongRef<>(size, 1000, 0, false);
-        cache = new CacheEngineImpl<>(size, 1000, 0, false);
-
-        for (int i = 0; i < size; i++) {
-            cache.put(new MyElement<>(i, "String: " + i));
-        }
-
-        assertEquals(true,true);
-    }
+    CacheEngineGenerics<Integer, ImageIcon> cache;
 
     @Test
-    void lifeCacheExample() throws InterruptedException{
+    void lifeCacheExample() throws InterruptedException, MalformedURLException {
         int size = 5;
 
-        cache = new CacheEngineImpl<>(size, 1000, 0, false);
+        cache = new CacheEngineGenericsImpl<>(size,1000,0,false);
 
         for (int i = 0; i < size; i++) {
-            cache.put(new MyElement<>(i, "String: " + i));
+            cache.put(i, new ImageIcon(new URL("https://java.com/ga/images/jv0h.jpg")));
         }
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(5, cache.getHitCount());
@@ -48,7 +37,7 @@ class CacheEngineImplTest {
         Thread.sleep(1100);
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(5, cache.getHitCount());
@@ -56,17 +45,17 @@ class CacheEngineImplTest {
     }
 
     @Test
-    void idleCacheExample() throws InterruptedException{
+    void idleCacheExample() throws InterruptedException,MalformedURLException{
         int size = 10;
 
-        cache = new CacheEngineImpl<>(size, 0, 500, false);
+        cache = new CacheEngineGenericsImpl<>(size, 0, 500, false);
 
         for (int i = 0; i < size; i++) {
-            cache.put(new MyElement<>(i, "String: " + i));
+            cache.put(i, new ImageIcon(new URL("https://java.com/ga/images/jv0h.jpg")));
         }
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(10, cache.getHitCount());
@@ -75,7 +64,7 @@ class CacheEngineImplTest {
         Thread.sleep(1000);
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(10, cache.getHitCount());
@@ -83,17 +72,17 @@ class CacheEngineImplTest {
     }
 
     @Test
-    void idleCacheExample1() throws InterruptedException{
+    void idleCacheExample1() throws InterruptedException, MalformedURLException{
         int size = 10;
 
-        cache = new CacheEngineImpl<>(size, 0, 500, false);
+        cache = new CacheEngineGenericsImpl<>(size, 0, 500, false);
 
         for (int i = 0; i < size; i++) {
-            cache.put(new MyElement<>(i, "String: " + i));
+            cache.put(i, new ImageIcon(new URL("https://java.com/ga/images/jv0h.jpg")));
         }
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(10, cache.getHitCount());
@@ -114,31 +103,31 @@ class CacheEngineImplTest {
         Thread.sleep(1000);
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            ImageIcon element = cache.get(i);
         }
 
         assertEquals(12, cache.getMissCount());
     }
 
     @Test
-    void idleCacheExample2() throws InterruptedException{
+    void idleCacheExample2() throws InterruptedException, MalformedURLException{
         int size = 10;
 
-        cache = new CacheEngineImpl<>(size, 0, 500, false);
+         CacheEngineGenerics<Integer, MyElement<Integer,String>> cache = new CacheEngineGenericsImpl<>(size, 0, 500, false);
 
         for (int i = 0; i < size; i++) {
-            cache.put(new MyElement<>(i, "String: " + i));
+            cache.put(i, new MyElement<>(i, "String: "+0));
         }
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            MyElement<Integer,String> element = cache.get(i);
         }
 
         Thread.sleep(600);
 
 
         for (int i = 0; i < size; i++) {
-            MyElement<Integer, String> element = cache.get(i);
+            MyElement<Integer,String> element = cache.get(i);
         }
 
         assertEquals(10, cache.getHitCount());
