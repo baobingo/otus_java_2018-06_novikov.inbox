@@ -12,7 +12,9 @@ class ATMTest {
 
     @Test
     void run() {
-        human.draw();
+        human.draw("Welcome %user%\n" +
+                "Type 1/summ to get money\n" +
+                "Type 2/summ to put money");
 
         controller.put(human.issue("160"));
         assertEquals(new BigDecimal(160),controller.getBalance());

@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ControllerImpl implements Controller {
-
-    Detector detector;
-    Map<NOTESVALUE,Cell> cells;
+    private static Logger logger = LoggerFactory.getLogger(ControllerImpl.class);
+    private Detector detector;
+    private Map<NOTESVALUE,Cell> cells;
 
     public ControllerImpl() {
         cells = new TreeMap<>();
@@ -44,6 +46,9 @@ public class ControllerImpl implements Controller {
 
         if(new BigDecimal(bills.entrySet().stream().mapToInt(x->x.getValue()*x.getKey().getRate()).sum()).compareTo(AMOUNT)==0){
             bills.entrySet().stream().forEach(x->cells.get(x.getKey()).get(x.getValue()));
+            logger.info("/-----transaction release start------/");
+            bills.entrySet().stream().forEach(x->logger.info(x.toString()));
+            logger.info("/-----transaction release end------/");
             return true;
         }
 
