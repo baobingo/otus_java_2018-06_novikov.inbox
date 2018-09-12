@@ -7,42 +7,41 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ATMTest {
-    Human human = new HumanImpl();
     Controller controller = new ControllerImpl();
 
     @Test
     void run() {
-        human.draw("Welcome %user%\n" +
+        System.out.println("Welcome %user%\n" +
                 "Type 1/summ to get money\n" +
                 "Type 2/summ to put money");
 
-        controller.put(human.issue("160"));
+        controller.put(Converter.toBigDecimal("160"));
         assertEquals(new BigDecimal(160),controller.getBalance());
 
-        controller.get(human.issue("170"));
+        controller.get(Converter.toBigDecimal("170"));
         assertEquals(new BigDecimal(160),controller.getBalance());
 
-        controller.get(human.issue("160"));
+        controller.get(Converter.toBigDecimal("160"));
         assertEquals(new BigDecimal(0),controller.getBalance());
 
-        controller.put(human.issue("200"));
+        controller.put(Converter.toBigDecimal("200"));
         assertEquals(new BigDecimal(200),controller.getBalance());
 
-        assertEquals(false, controller.get(human.issue("150")));
+        assertEquals(null, controller.get(Converter.toBigDecimal("150")));
         assertEquals(new BigDecimal(200),controller.getBalance());
 
-        controller.put(human.issue("50"));
+        controller.put(Converter.toBigDecimal("50"));
         assertEquals(new BigDecimal(250),controller.getBalance());
 
-        controller.get(human.issue("150"));
+        controller.get(Converter.toBigDecimal("150"));
         assertEquals(new BigDecimal(100),controller.getBalance());
 
-        controller.get(human.issue("100"));
+        controller.get(Converter.toBigDecimal("100"));
         assertEquals(new BigDecimal(0),controller.getBalance());
 
-        assertEquals(true, controller.put(human.issue("300")));
-        assertEquals(false, controller.get(human.issue("250")));
-        assertEquals(true, controller.put(human.issue("50")));
-        assertEquals(true, controller.get(human.issue("350")));
+        assertEquals(true, controller.put(Converter.toBigDecimal("300")));
+        assertEquals(null, controller.get(Converter.toBigDecimal("250")));
+        assertEquals(true, controller.put(Converter.toBigDecimal("50")));
+        assertEquals(true, controller.get(Converter.toBigDecimal("350")).size()>0);
     }
 }

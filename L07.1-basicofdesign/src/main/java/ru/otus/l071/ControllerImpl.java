@@ -27,11 +27,11 @@ public class ControllerImpl implements Controller {
     }
 
     @Override
-    public boolean get(BigDecimal amount){
+    public Map<NOTESVALUE,Integer> get(BigDecimal amount){
         BigDecimal AMOUNT = amount;
 
         if(getBalance().compareTo(amount)<0){
-            return false;
+            return null;
         }
 
         Map<NOTESVALUE,Integer> bills = new HashMap<>();
@@ -46,13 +46,10 @@ public class ControllerImpl implements Controller {
 
         if(new BigDecimal(bills.entrySet().stream().mapToInt(x->x.getValue()*x.getKey().getRate()).sum()).compareTo(AMOUNT)==0){
             bills.entrySet().stream().forEach(x->cells.get(x.getKey()).get(x.getValue()));
-            logger.info("/-----transaction release start------/");
-            bills.entrySet().stream().forEach(x->logger.info(x.toString()));
-            logger.info("/-----transaction release end------/");
-            return true;
+            return bills;
         }
 
-        return false;
+        return null;
     }
 
     @Override
