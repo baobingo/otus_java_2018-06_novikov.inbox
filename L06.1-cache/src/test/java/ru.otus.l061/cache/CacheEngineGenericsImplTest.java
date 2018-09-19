@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CacheEngineGenericsImplTest {
 
-    private static Logger logger = LoggerFactory.getLogger(CacheEngineImplTest.class);
+    private static Logger logger = LoggerFactory.getLogger(CacheEngineGenericsImplTest.class);
     CacheEngineGenerics<Integer, ImageIcon> cache;
 
     @Test
@@ -22,7 +22,7 @@ class CacheEngineGenericsImplTest {
         int size = 5;
 
         cache = new CacheEngineGenericsImpl<>(size,1000,0,false);
-
+        logger.info("1");
         for (int i = 0; i < size; i++) {
             cache.put(i, new ImageIcon(new URL("https://java.com/ga/images/jv0h.jpg")));
         }

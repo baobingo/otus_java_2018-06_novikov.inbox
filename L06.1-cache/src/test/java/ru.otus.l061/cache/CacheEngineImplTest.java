@@ -31,7 +31,7 @@ class CacheEngineImplTest {
     @Test
     void lifeCacheExample() throws InterruptedException{
         int size = 5;
-
+        logger.info("1");
         cache = new CacheEngineImpl<>(size, 1000, 0, false);
 
         for (int i = 0; i < size; i++) {

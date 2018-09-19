@@ -2,13 +2,14 @@ package ru.otus.l081;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
-public class ATMObservableImpl implements ATMObservable {
+public class ATMDepartment implements ATMObservable {
 
-    private ArrayList<ATMObserver> atmPool;
+    private List<ATMObserver> atmPool;
 
-    public ATMObservableImpl() {
+    public ATMDepartment() {
         atmPool = new ArrayList<>(5);
     }
 
