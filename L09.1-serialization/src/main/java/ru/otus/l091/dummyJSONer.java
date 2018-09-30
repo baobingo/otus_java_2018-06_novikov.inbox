@@ -4,7 +4,7 @@ import javax.json.*;
 
 public class dummyJSONer {
 
-    private static JOBBuilderVisitor JOBBuilderVisitor = new JOBBuilderVisitor();
+    private static JOBBuilderVisitor JOBBuilderVisitor = new JOBBuilderVisitor(new ConcreteVisitorInt(), new ConcreteVisitorDouble(), new ConcreteVisitorString(), new ConcreteVisitorList(), new ConreteStringArray(), new ConcreteIntArray(), new ConcreteDoubleArray());
 
     public static void main(String[] args) {
         System.out.println(toJson(new SampleObject()));
