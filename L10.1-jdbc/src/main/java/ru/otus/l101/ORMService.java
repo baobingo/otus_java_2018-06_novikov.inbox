@@ -1,8 +1,10 @@
 package ru.otus.l101;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 public interface ORMService {
     String getTableStructureByClass(java.lang.Class object);
-    List<String> getInsertQueryByObject(Object... objects);
+    String getInsertQueryByObject(Object object);
+    DataSet createObjectFromResultSet(java.lang.Class clazz, ResultSet resultSet);
 }

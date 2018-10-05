@@ -41,20 +41,20 @@ public class ConcreteDBService implements DBService {
 
     @Override
     public void insertUsers(UserDataSet... userDataSets) throws SQLException {
-        List<String> result = concreteORMService.getInsertQueryByObject((Object[])userDataSets);
-        for (String s : result) {
+        for (UserDataSet userDataSet : userDataSets) {
             TExecutor tExecutor = new ConcreteTExecutor(getConnection());
-            tExecutor.execUpdate(s);
+            tExecutor.execUpdate(concreteORMService.getInsertQueryByObject(userDataSet));
+            userDataSet.setId(getLastAddedId(userDataSet.getClass()));
         }
     }
 
     @Override
-    public List<UserDataSet> getAllUsers(java.lang.Class clazz) throws SQLException {
-        List<UserDataSet> userDataSet = new ArrayList<>();
+    public List<DataSet> getAllUsers(java.lang.Class clazz) throws SQLException {
+        List<DataSet> userDataSet = new ArrayList<>();
         TExecutor tExecutor = new ConcreteTExecutor(getConnection());
         return tExecutor.execQuery("select * from `" + clazz.getSimpleName().toLowerCase() + "`", result->{
             while(result.next()) {
-                userDataSet.add(new UserDataSet(Long.parseLong(result.getString("id")), result.getString("name"), Short.parseShort(result.getString("age"))));
+                userDataSet.add(concreteORMService.createObjectFromResultSet(clazz, result));
             }
             return userDataSet;
         });
@@ -62,26 +62,37 @@ public class ConcreteDBService implements DBService {
 
     @Override
     public String getUserNameById(java.lang.Class clazz, int id) throws SQLException {
-        TExecutor tExecutor = new ConcreteTExecutor(getConnection());
-        return tExecutor.execQuery("select * from `" + clazz.getSimpleName().toLowerCase() + "`", result->{
-            while(result.next()){
-                if(Integer.parseInt(result.getString("id"))==id){
-                    return "User by ID " + result.getString("id") + " is " + result.getString("name");
-                }
-            }
-            return "";
+        PreparedTExecutor preparedTExecutor = new ConcretePreparedTExecutor(getConnection());
+
+        return preparedTExecutor.execQuery("select * from `" + clazz.getSimpleName().toLowerCase() + "` WHERE id=(?)", statement -> {
+            statement.setString(1, String.valueOf(id));
+            statement.execute();
+            return statement.getResultSet();
+        }, resultSet -> { resultSet.next();
+            return resultSet.getString("name");
         });
     }
 
     @Override
-    public UserDataSet getUserByInstance(UserDataSet userDataSet) throws SQLException {
-        List<UserDataSet> allUsers = getAllUsers(userDataSet.getClass());
-        return allUsers.stream().filter(x->x.getName().equals(userDataSet.getName())&&x.getAge()==userDataSet.getAge()).findFirst().get();
+    public DataSet getUserByInstance(UserDataSet userDataSet) throws SQLException {
+        List<DataSet> allUsers = getAllUsers(userDataSet.getClass());
+        return allUsers.stream().map(x->(UserDataSet)x).filter(x->x.getName().equals(userDataSet.getName())&&x.getAge()==userDataSet.getAge()).findFirst().get();
     }
 
     @Override
     public void close() throws Exception {
         connection.close();
         System.out.println("Connection closed");
+    }
+
+    public int getLastAddedId(java.lang.Class clazz) throws SQLException{
+        PreparedTExecutor preparedTExecutor = new ConcretePreparedTExecutor(getConnection());
+
+        return preparedTExecutor.execQuery("select max(id) id from `" + clazz.getSimpleName().toLowerCase() + "` ", statement -> {
+            statement.execute();
+            return statement.getResultSet();
+        }, resultSet -> { resultSet.next();
+            return  Integer.parseInt(resultSet.getString("id"));
+        });
     }
 }

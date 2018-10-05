@@ -1,9 +1,9 @@
 package ru.otus.l101;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.ResultSet;
 
 public class ConcreteORMService implements ORMService {
 
@@ -42,41 +42,58 @@ public class ConcreteORMService implements ORMService {
     }
 
     @Override
-    public List<String> getInsertQueryByObject(Object... objects) {
+    public String getInsertQueryByObject(Object object) {
 
-        List<String> result = new ArrayList<>();
+            StringBuilder tableColumn = new StringBuilder();
+            StringBuilder values =  new StringBuilder();
 
-        Arrays.stream(objects).forEach(
-                (object)->{
-                    StringBuilder tableColumn = new StringBuilder();
-                    StringBuilder values =  new StringBuilder();
-
-                    for (Field field : object.getClass().getSuperclass().getDeclaredFields()) {
-                        field.setAccessible(true);
-                        if(field.getName() != "id") {
-                            tableColumn.append("`" + field.getName() + "`, ");
-                            try {
-                                values.append("'" + field.get(object) + "', ");
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
+            for (Field field : object.getClass().getSuperclass().getDeclaredFields()) {
+                field.setAccessible(true);
+                if(field.getName() != "id") {
+                    tableColumn.append("`" + field.getName() + "`, ");
+                    try {
+                        values.append("'" + field.get(object) + "', ");
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
                     }
-
-                    for (Field field : object.getClass().getDeclaredFields()) {
-                        field.setAccessible(true);
-                        tableColumn.append("`"+field.getName()+"`, ");
-                        try {
-                            values.append("'"+field.get(object)+"', ");
-                        }catch (IllegalAccessException e){
-                            e.printStackTrace();
-                        }
-                    };
-
-                    result.add("INSERT INTO `" + object.getClass().getSimpleName().toLowerCase() + "` ("+ tableColumn.replace(tableColumn.length()-2,tableColumn.length(),"").toString() + ") VALUES (" +values.replace(values.length()-2,values.length(),"").toString() + ")");
                 }
-        );
+            }
 
-        return result;
+            for (Field field : object.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                tableColumn.append("`"+field.getName()+"`, ");
+                try {
+                    values.append("'"+field.get(object)+"', ");
+                }catch (IllegalAccessException e){
+                    e.printStackTrace();
+                }
+            };
+
+            return "INSERT INTO `" + object.getClass().getSimpleName().toLowerCase() + "` ("+ tableColumn.replace(tableColumn.length()-2,tableColumn.length(),"").toString() + ") VALUES (" +values.replace(values.length()-2,values.length(),"").toString() + ")";
+
+    }
+
+    @Override
+    public DataSet createObjectFromResultSet(Class clazz, ResultSet resultSet) {
+        try {
+            Object newInstance = clazz.getConstructor().newInstance();
+
+            for (Field field : newInstance.getClass().getSuperclass().getDeclaredFields()) {
+                field.setAccessible(true);
+                BeanUtils.setProperty(newInstance, field.getName(), resultSet.getString(field.getName()));
+            }
+
+            for (Field field : newInstance.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                BeanUtils.setProperty(newInstance, field.getName(), resultSet.getString(field.getName()));
+            };
+
+           return (DataSet)newInstance;
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

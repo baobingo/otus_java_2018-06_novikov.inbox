@@ -9,7 +9,7 @@ public interface DBService extends AutoCloseable {
     void dropTable(java.lang.Class clazz) throws SQLException;
 
     void insertUsers(UserDataSet... userDataSets) throws SQLException;
-    List<UserDataSet> getAllUsers(java.lang.Class clazz) throws SQLException;
+    List<DataSet> getAllUsers(java.lang.Class clazz) throws SQLException;
     String getUserNameById(java.lang.Class clazz, int id) throws SQLException;
-    UserDataSet getUserByInstance(UserDataSet userDataSet) throws SQLException;
+    DataSet getUserByInstance(UserDataSet userDataSet) throws SQLException;
 }
