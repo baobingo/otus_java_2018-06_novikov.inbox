@@ -39,9 +39,6 @@ public class UserDataSet extends DataSet {
                 ", age='" + age + '\'' +
                 '}';
     }
-    public void setId(int id){
-        super.setId(id);
-    }
 
     public void setName(String name) {
         this.name = name;

@@ -1,6 +1,10 @@
 package ru.otus.l101;
 
+import org.apache.commons.beanutils.BeanUtils;
+
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +47,17 @@ public class ConcreteDBService implements DBService {
     public void insertUsers(UserDataSet... userDataSets) throws SQLException {
         for (UserDataSet userDataSet : userDataSets) {
             TExecutor tExecutor = new ConcreteTExecutor(getConnection());
-            tExecutor.execUpdate(concreteORMService.getInsertQueryByObject(userDataSet));
-            userDataSet.setId(getLastAddedId(userDataSet.getClass()));
+            tExecutor.execQuery(concreteORMService.getInsertQueryByObject(userDataSet), statement -> {
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    try {
+                        BeanUtils.setProperty(userDataSet, "id", resultSet.getInt(1));
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return "";
+            });
         }
     }
 
@@ -53,8 +66,9 @@ public class ConcreteDBService implements DBService {
         List<DataSet> userDataSet = new ArrayList<>();
         TExecutor tExecutor = new ConcreteTExecutor(getConnection());
         return tExecutor.execQuery("select * from `" + clazz.getSimpleName().toLowerCase() + "`", result->{
-            while(result.next()) {
-                userDataSet.add(concreteORMService.createObjectFromResultSet(clazz, result));
+            ResultSet resultSet = result.getResultSet();
+            while(resultSet.next()) {
+                userDataSet.add(concreteORMService.createObjectFromResultSet(clazz, resultSet));
             }
             return userDataSet;
         });
@@ -67,8 +81,8 @@ public class ConcreteDBService implements DBService {
         return preparedTExecutor.execQuery("select * from `" + clazz.getSimpleName().toLowerCase() + "` WHERE id=(?)", statement -> {
             statement.setString(1, String.valueOf(id));
             statement.execute();
-            return statement.getResultSet();
-        }, resultSet -> { resultSet.next();
+            return statement;
+        }, x -> { ResultSet resultSet=x.getResultSet();  resultSet.next();
             return resultSet.getString("name");
         });
     }
@@ -83,16 +97,5 @@ public class ConcreteDBService implements DBService {
     public void close() throws Exception {
         connection.close();
         System.out.println("Connection closed");
-    }
-
-    public int getLastAddedId(java.lang.Class clazz) throws SQLException{
-        PreparedTExecutor preparedTExecutor = new ConcretePreparedTExecutor(getConnection());
-
-        return preparedTExecutor.execQuery("select max(id) id from `" + clazz.getSimpleName().toLowerCase() + "` ", statement -> {
-            statement.execute();
-            return statement.getResultSet();
-        }, resultSet -> { resultSet.next();
-            return  Integer.parseInt(resultSet.getString("id"));
-        });
     }
 }

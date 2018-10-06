@@ -20,8 +20,7 @@ public class ConcretePreparedTExecutor implements PreparedTExecutor {
     @Override
     public <T> T execQuery(String query, ExecuteHandler executeHandler, TResultHandler<T> handler) throws SQLException {
         try(PreparedStatement stmt = getConnection().prepareStatement(query)) {
-            ResultSet result = (ResultSet)executeHandler.accept(stmt);
-            return handler.handle(result);
+            return handler.handle((PreparedStatement)executeHandler.accept(stmt));
         }
     }
 
