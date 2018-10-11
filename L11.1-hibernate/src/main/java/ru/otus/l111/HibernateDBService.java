@@ -86,7 +86,7 @@ public class HibernateDBService implements DBService {
     }
 
     @Override
-    public UserDataSet getUserByInstance(UserDataSet userDataSet) {
+    public UserDataSet getUserByExample(UserDataSet userDataSet) {
         TExecutor tExecutor = new HibernateTExecutor(getSessionFactory());
         return tExecutor.runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);

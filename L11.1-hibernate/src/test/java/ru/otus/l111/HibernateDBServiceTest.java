@@ -7,9 +7,6 @@ import ru.otus.l111.dataSets.UserDataSet;
 
 import javax.persistence.NoResultException;
 
-import java.lang.reflect.Executable;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -68,7 +65,7 @@ class HibernateDBServiceTest {
                 new AddressDataSet("Kremlin 2")));
         hibernateDBService.insertUsers(new UserDataSet("Andrew 3",24, new PhoneDataSet("126"),
                 new AddressDataSet("Kremlin 3")));
-        UserDataSet userDataSet = hibernateDBService.getUserByInstance(new UserDataSet("Andrew 1",22, new PhoneDataSet("124"),
+        UserDataSet userDataSet = hibernateDBService.getUserByExample(new UserDataSet("Andrew 1",22, new PhoneDataSet("124"),
                 new AddressDataSet("Kremlin 1")));
         assertEquals(userDataSet.getName(), "Andrew 1");
         assertEquals(userDataSet.getAge(), 22);
@@ -76,7 +73,7 @@ class HibernateDBServiceTest {
         assertEquals(userDataSet.getAddress().getStreet(), "Kremlin 1");
 
 
-        assertThrows(NoResultException.class,()->{ hibernateDBService.getUserByInstance(new UserDataSet("Andrew 1",21, new PhoneDataSet("124"),
+        assertThrows(NoResultException.class,()->{ hibernateDBService.getUserByExample(new UserDataSet("Andrew 1",21, new PhoneDataSet("124"),
                 new AddressDataSet("Kremlin 2")));});
         hibernateDBService.shutdown();
 

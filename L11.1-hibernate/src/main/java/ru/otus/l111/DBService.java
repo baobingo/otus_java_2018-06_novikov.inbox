@@ -11,7 +11,7 @@ public interface DBService {
     void insertUsers(UserDataSet... userDataSets);
     List<UserDataSet> getAllUsers();
     String getUserNameById(int id);
-    UserDataSet getUserByInstance(UserDataSet userDataSet);
+    UserDataSet getUserByExample(UserDataSet userDataSet);
     List<UserDataSet> getUsersByAddress(AddressDataSet addressDataSet);
 
     void shutdown();
