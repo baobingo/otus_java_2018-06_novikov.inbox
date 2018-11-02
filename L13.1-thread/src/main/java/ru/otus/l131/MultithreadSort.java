@@ -4,28 +4,18 @@ import java.util.Arrays;
 
 public class MultithreadSort {
 
-    private int[] result;
-    private int[] tmp1;
-    private int[] tmp2;
-
     public int[] sort(int[] a){
 
         int chunk = a.length/4;
 
-        int[] a1 = Arrays.copyOfRange(a, 0, chunk);
-        int[] a2 = Arrays.copyOfRange(a, chunk, chunk*2);
-        int[] a3 = Arrays.copyOfRange(a, chunk*2, chunk*3);
-        int[] a4 = Arrays.copyOfRange(a, chunk*3, a.length);
-
-        Thread th1 = new Thread(new ThreadUnitSort(a1));
-        Thread th2 = new Thread(new ThreadUnitSort(a2));
-        Thread th3 = new Thread(new ThreadUnitSort(a3));
-        Thread th4 = new Thread(new ThreadUnitSort(a4));
+        Thread th1 = new ThreadUnitSort(Arrays.copyOfRange(a, 0, chunk));
+        Thread th2 = new ThreadUnitSort(Arrays.copyOfRange(a, chunk, chunk*2));
+        Thread th3 = new ThreadUnitSort(Arrays.copyOfRange(a, chunk*2, chunk*3));
+        Thread th4 = new ThreadUnitSort(Arrays.copyOfRange(a, chunk*3, a.length));
         th1.start();
         th2.start();
         th3.start();
         th4.start();
-
         try {
             th1.join();
             th2.join();
@@ -34,40 +24,25 @@ public class MultithreadSort {
         }catch (InterruptedException e){
         }
 
-        Thread th5 = new Thread(()->{tmp1 = mergeSortedArrays(a1, a2);});
-        Thread th6 = new Thread(()->{tmp2 = mergeSortedArrays(a3, a4);});
+        Runnable r1 = new MergeRunnable(((ThreadUnitSort) th1).getA(), ((ThreadUnitSort) th2).getA());
+        Runnable r2 = new MergeRunnable(((ThreadUnitSort) th3).getA(), ((ThreadUnitSort) th4).getA());
+
+        Thread th5 = new Thread(r1);
+        Thread th6 = new Thread(r2);
         th5.start();
         th6.start();
         try {
             th5.join();
             th6.join();
         }catch (InterruptedException e){};
-        result = mergeSortedArrays(tmp1, tmp2);
 
-        return result;
-    }
+        Runnable r3 = new MergeRunnable(((MergeRunnable) r1).getResult(), ((MergeRunnable) r2).getResult());
+        Thread th7 = new Thread(r3);
+        th7.start();
+        try {
+            th7.join();
+        }catch (InterruptedException e){};
 
-    //Input arrays must be sorted before
-    private int [] mergeSortedArrays(int [] a, int [] b){
-        int [] r = new int[a.length+b.length];
-        int c = 0, ac = 0, ab = 0;
-        while (ac < a.length && ab < b.length){
-            if (a[ac] < b[ab]){
-                r[c] = a[ac];
-                c++; ac++;
-            }else {
-                r[c] = b[ab];
-                c++; ab++;
-            }
-        }
-        for(int index=ac; index<a.length; index++){
-            r[c] = a[index];
-            c++;
-        }
-        for(int index=ab; index<b.length; index++){
-            r[c] = b[index];
-            c++;
-        }
-        return r;
+        return ((MergeRunnable) r3).getResult();
     }
 }
