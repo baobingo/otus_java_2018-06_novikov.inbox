@@ -8,6 +8,9 @@ public class DataSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    public DataSet() {
+    }
+
     long getId() {
         return id;
     }

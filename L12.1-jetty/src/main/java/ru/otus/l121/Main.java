@@ -18,6 +18,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 
 /**
+ * Make executable WAR file by command: mvn package
+ */
+
+/**
  *
  * REST Client open http://localhost:8081/rest-client/
  *
