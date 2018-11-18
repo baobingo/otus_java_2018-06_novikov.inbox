@@ -1,7 +1,7 @@
-package ru.otus.l141;
+package ru.otus.l151;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.otus.l141.dataSets.UserDataSet;
+import ru.otus.l151.dataSets.UserDataSet;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

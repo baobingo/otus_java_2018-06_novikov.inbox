@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+<h4>Результаты можно также проверить через rest клиент <a href="rest-client/" target="_blank">/rest-client</a></h4>
+<div>
+    <h3>Добавление пользователя</h3>
+    <textarea type="text" id="input" style="width: 600px; height: 300px;">
+        {
+    "from": {
+    "id": "front"
+    },
+    "to": {
+    "id": "db"
+    },
+    "action": "PUT",
+    "body": {
+    "name": "Vovan 3",
+    "age": 33,
+    "phone": {
+    "number": "911"
+    },
+    "address": {
+    "street":"Moscow"
+    }
+    }
+    }
+    </textarea>
+</div>
+<div>
+    <input type="button" id="connectBtn" value="CONNECT"
+           onclick="connect()" /> <input type="button" id="sendBtn"
+                                         value="SEND" onclick="send()" disabled="true" />
+</div>
+<div>
+    <h3>Получение результатов добавления</h3>
+<textarea type="text" id="input1" style="width: 600px; height: 200px;">
+{
+  "from": {
+    "id": "db"
+  },
+  "to": {
+    "id": "front"
+  },
+  "action": "GET",
+  "body": {
+  }
+}
+    </textarea>
+</div>
+<div>
+    <input type="button" id="connectBtn1" value="CONNECT"
+           onclick="connect()" /> <input type="button" id="sendBtn1"
+                                         value="SEND" onclick="send1()" disabled="true" />
+</div>
+<div id="output">
+    <p>Сообщения:</p>
+</div>
+</body>
+
+<script type="text/javascript">
+    var webSocket;
+    var output = document.getElementById("output");
+    var connectBtn = document.getElementById("connectBtn");
+    var sendBtn = document.getElementById("sendBtn");
+
+    function connect() {
+        // open the connection if one does not exist
+        if (webSocket !== undefined
+            && webSocket.readyState !== WebSocket.CLOSED) {
+            return;
+        }
+        // Create a websocket
+        webSocket = new WebSocket("ws://localhost:8080/L151-ms-websocket-novikov.inbox/ms");
+
+        webSocket.onopen = function(event) {
+            updateOutput("Connected!");
+            connectBtn.disabled = true;
+            connectBtn1.disabled = true;
+            sendBtn.disabled = false;
+            sendBtn1.disabled = false;
+
+        };
+
+        webSocket.onmessage = function(event) {
+            updateOutput(event.data);
+        };
+
+        webSocket.onclose = function(event) {
+            updateOutput("Connection Closed");
+            connectBtn.disabled = false;
+            connectBtn1.disabled = false;
+            sendBtn.disabled = true;
+            sendBtn1.disabled = true;
+        };
+    }
+
+    function send() {
+        var text = document.getElementById("input").value;
+        webSocket.send(text);
+    }
+
+    function send1() {
+        var text = document.getElementById("input1").value;
+        webSocket.send(text);
+    }
+
+    function closeSocket() {
+        webSocket.close();
+    }
+
+    function updateOutput(text) {
+        output.innerHTML += "<br/>" + text;
+    }
+</script>
+</html>
