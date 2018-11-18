@@ -9,7 +9,7 @@
 
 
 /**
- *
- * REST Client open http://localhost:8080/L151-novikov.inbox/
+ * WS Client open http://localhost:8080/L151-novikov.inbox/
+ * REST Client open http://localhost:8080/L151-novikov.inbox/rest-client/
  *
  */
